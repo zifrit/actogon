@@ -9,7 +9,6 @@ from rest_framework import generics
 from rest_framework.views import APIView
 
 
-
 class MyTokenObtainSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         # data = super(TokenObtainPairSerializer, self).validate(attrs)
@@ -28,3 +27,13 @@ class MyTokenObtainSerializer(TokenObtainPairSerializer):
 
 class MyTokenObtainView(TokenObtainPairView):
     serializer_class = MyTokenObtainSerializer
+
+
+class CreatListEvent(generics.ListCreateAPIView):
+    serializer_class = EventSer
+    queryset = Events.objects.all()
+
+
+class CreatListComments(generics.ListCreateAPIView):
+    serializer_class = CommentsSer
+    queryset = Comments.objects.all()

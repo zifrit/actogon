@@ -1,17 +1,21 @@
 from django.db import models
-from back.models import *
+from actogon import settings
 
 
-class Events(models):
+class Events(models.Model):
     photo = models.FileField(upload_to='photo/%Y/%m.%d/', verbose_name='фото проблемы')
     like = models.IntegerField(verbose_name='количество лайков')
-    whose = models.ForeignKey(to='CustomUser', on_delete=models.CASCADE, verbose_name='чьё событие')
+    title = models.CharField(max_length=255, verbose_name='название')
+    description = models.TextField(verbose_name='описание')
     place = models.CharField(max_length=255, verbose_name='место')
     coordinate = models.CharField(max_length=255, verbose_name='координаты')
-    state = models.CharField(max_length=2)
+
+    def __str__(self):
+        return self.title
 
 
-class Comments(models):
-    user = models.ForeignKey(to='CustomUser', on_delete=models.CASCADE, verbose_name='кто комментатор')
+class Comments(models.Model):
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='кто комментатор',
+                             default=None)
     event = models.ForeignKey(to='Events', on_delete=models.CASCADE, verbose_name='статья комментария')
-
+    text = models.TextField(verbose_name='текст комментария', default=None)
