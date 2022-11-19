@@ -26,3 +26,9 @@ class Comments(models.Model):
 
     class Meta:
         db_table = 'Комментарии'
+
+
+class Likes(models.Model):
+    event = models.ForeignKey(to=Events, on_delete=models.CASCADE, verbose_name='событие')
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='кто лайкал',
+                             default=None)

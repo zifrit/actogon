@@ -5,8 +5,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from six import text_type
 
 from .serializers import *
-from .models import *
 from back.models import *
+from .models import *
 from rest_framework import generics
 from rest_framework.views import APIView
 
@@ -43,6 +43,25 @@ class CreatListEvent(generics.ListCreateAPIView):
     pagination_class = PagEvents
 
 
+class NumberLikes(APIView):
+
+    def get(self, request):
+        ob = Likes.objects.filter(user=request.user)
+        context = []
+        if len(ob) == 1:
+            context.append(ob[0].event.id)
+        else:
+            for i in ob:
+                context.append(i.event.id)
+        print(ob)
+        print(context)
+
+        return Response({
+            'likes': context,
+            'status': 'true'
+        })
+
+
 class CreatComments(generics.CreateAPIView):
     serializer_class = CommentsSer
     queryset = Comments.objects.all()
@@ -63,7 +82,9 @@ class AddLike(generics.UpdateAPIView):
 
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
+        user = self.request.user
         ob = Events.objects.get(pk=pk)
+        Likes.objects.create(user=user, event=ob)
         ob.like += 1
         ob.save()
         return Response({
