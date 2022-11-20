@@ -60,6 +60,11 @@ class ListAdminEvent(generics.ListAPIView):
         return Events.objects.filter(status=choice)
 
 
+class GetEvent(generics.RetrieveAPIView):
+    serializer_class = AdminEventSer
+    queryset = Events.objects.all()
+
+
 class NumberLikes(APIView):
     permission_classes = (IsAuthenticated,)
 

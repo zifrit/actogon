@@ -8,6 +8,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('events/', CreatListEvent.as_view(), name='event'),
+    path('event/<int:pk>/', GetEvent.as_view(), name='event'),
     path('admin_events/', ListAdminEvent.as_view(), name='admin_events'),
     path('add_photo/', PhotoEvent.as_view(), name='photo_events'),
     path('comments/<int:pk>/', ListComments.as_view(), name='list_comments'),

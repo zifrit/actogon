@@ -12,10 +12,11 @@ class Events(models.Model):
     district = models.ForeignKey(to='District', on_delete=models.SET_NULL, null=True, default=None, blank=True)
     STATUS = (
         ('A', 'Принятый'),
+        ('S', 'Принял'),
         ('R', 'Отказано'),
         ('T', 'Архив'),
     )
-    status = models.CharField(max_length=1, verbose_name='статус', default='', choices=STATUS)
+    status = models.CharField(max_length=1, verbose_name='статус', default='F', choices=STATUS)
 
     def __str__(self):
         return self.title

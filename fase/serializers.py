@@ -21,9 +21,10 @@ class AdminEventSer(serializers.ModelSerializer):
 
 
 class CommentsSer(serializers.ModelSerializer):
+    user = serializers.CharField(source='user.username')
     class Meta:
         model = Comments
-        exclude = ['user']
+        fields = '__all__'
 
 
 class UserSerializer(serializers.ModelSerializer):
