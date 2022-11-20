@@ -40,16 +40,24 @@ class PagEvents(PageNumberPagination):
 
 class CreatListEvent(generics.ListCreateAPIView):
     serializer_class = EventSer
-    queryset = Events.objects.all()
     pagination_class = PagEvents
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         district = self.request.GET.get('district')
         if district:
-            return Events.objects.filter(district__name__startswith=district)
+            return Events.objects.filter(district__name=district, status='A')
         else:
-            return Events.objects.all()
+            return Events.objects.filter(status='A')
+
+
+class ListAdminEvent(generics.ListAPIView):
+    serializer_class = AdminEventSer
+    pagination_class = PagEvents
+
+    def get_queryset(self):
+        choice = self.request.GET.get('choice')
+        return Events.objects.filter(status=choice)
 
 
 class NumberLikes(APIView):
@@ -63,8 +71,6 @@ class NumberLikes(APIView):
         else:
             for i in ob:
                 context.append(i.event.id)
-        print(ob)
-        print(context)
 
         return Response({
             'likes': context,
@@ -112,3 +118,16 @@ class AddLike(generics.UpdateAPIView):
 class CreateUser(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
+
+
+class PhotoEvent(generics.CreateAPIView):
+    queryset = Photo.objects.all()
+    serializer_class = PhotoSer
+    permission_classes = (IsAuthenticated,)
+
+
+def create(self, request, *args, **kwargs):
+    response = super().create(request, *args, **kwargs)
+    return Response({
+        'id': response.data['id']
+    })

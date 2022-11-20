@@ -5,6 +5,15 @@ from .models import *
 
 class EventSer(serializers.ModelSerializer):
     like = serializers.CharField(read_only=True)
+    photo = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Events
+        exclude = ['status']
+
+
+class AdminEventSer(serializers.ModelSerializer):
+    photo = serializers.CharField(read_only=True)
 
     class Meta:
         model = Events
@@ -31,3 +40,9 @@ class UserSerializer(serializers.ModelSerializer):
         user.is_active = True
         user.save()
         return user
+
+
+class PhotoSer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = '__all__'
