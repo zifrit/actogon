@@ -74,7 +74,6 @@ class NumberLikes(APIView):
 
         return Response({
             'likes': context,
-            'status': 'true'
         })
 
 
