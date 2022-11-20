@@ -1,4 +1,5 @@
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -41,9 +42,18 @@ class CreatListEvent(generics.ListCreateAPIView):
     serializer_class = EventSer
     queryset = Events.objects.all()
     pagination_class = PagEvents
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        district = self.request.GET.get('district')
+        if district:
+            return Events.objects.filter(district__name__startswith=district)
+        else:
+            return Events.objects.all()
 
 
 class NumberLikes(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         ob = Likes.objects.filter(user=request.user)
@@ -65,10 +75,15 @@ class NumberLikes(APIView):
 class CreatComments(generics.CreateAPIView):
     serializer_class = CommentsSer
     queryset = Comments.objects.all()
+    permission_classes = (IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
 
 
 class ListComments(generics.ListAPIView):
     serializer_class = CommentsSer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -79,6 +94,7 @@ class ListComments(generics.ListAPIView):
 class AddLike(generics.UpdateAPIView):
     serializer_class = EventSer
     queryset = Events.objects.all()
+    permission_classes = (IsAuthenticated,)
 
     def put(self, request, *args, **kwargs):
         pk = kwargs['pk']
@@ -91,3 +107,8 @@ class AddLike(generics.UpdateAPIView):
             'much': ob.like,
             'status': 'true'
         })
+
+
+class CreateUser(generics.CreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
